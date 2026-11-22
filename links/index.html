@@ -903,6 +903,33 @@
 			line-height: 1.45;
 		}
 
+
+		/* ==================== BANNER ESPECIAL: CARDÁPIO DE NATAL 2026 ==================== */
+		.natal-banner-card {
+			position: relative;
+			width: 100%;
+			display: block;
+			text-decoration: none;
+			border-radius: 18px;
+			overflow: hidden;
+			box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(212, 163, 89, 0.65);
+			transition: transform 0.25s ease, box-shadow 0.25s ease;
+			background: linear-gradient(135deg, #3b1912 0%, #6e2d1e 50%, #9b442b 100%);
+		}
+
+		.natal-banner-card:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6), 0 0 22px rgba(212, 163, 89, 0.45);
+		}
+
+		.natal-banner-card img {
+			width: 100%;
+			height: auto;
+			aspect-ratio: 16 / 9;
+			object-fit: cover;
+			display: block;
+		}
+
 	</style>
 </head>
 <body>
@@ -915,6 +942,12 @@
 		</a>
 
 <!-- ==================== BANNERS ATIVOS ==================== -->
+
+		<!-- 0. BANNER CARDÁPIO DE NATAL 2026 (PDF GOOGLE DRIVE) -->
+		<!-- PARA TROCAR A IMAGEM: substitua o conteúdo de src="..." pelo caminho da sua imagem (ex: src="imagens/banner-natal-2026.jpg") ou pelo código Base64 dela -->
+		<a href="https://drive.google.com/file/d/118RCxA70uK7LW5VDN156gX0kwpbBtTgu/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="banner-card natal-banner-card" id="natal-2026-btn" title="Abrir Cardápio de Natal 2026 em PDF">
+			<img id="natal-2026-img" src="banner-cardapio-natal-2026.png" alt="Cardápio de Natal 2026 - Andressa Meireles Confeitaria (Abrir PDF)">
+		</a>
 
 		<!-- 1. LINK DE ENCOMENDA (WHATSAPP DIRETO COM ID VERIFICADO PELO SCRIPT DO GOOGLE ADS / INSTAGRAM) -->
 		<a href="https://api.whatsapp.com/send/?phone=%2B5521981541545&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" class="banner-card" id="whatsapp-btn">
@@ -1181,11 +1214,12 @@
 							<th>Delivery Direto</th>
 							<th>iFood</th>
 							<th>99Food</th>
+							<th>Natal 2026</th>
 							<th>Shopee / Insta</th>
 						</tr>
 					</thead>
 					<tbody id="analyticsDailyTableBody">
-						<tr><td colspan="8">Carregando dados...</td></tr>
+						<tr><td colspan="9">Carregando dados...</td></tr>
 					</tbody>
 				</table>
 			</div>
@@ -1340,6 +1374,7 @@
 						acessos_google: 0,
 						acessos_instagram: 0,
 						cliques_wa_google: 0,
+						cliques_natal_2026: 0,
 						cliques_wa_instagram: 0,
 						cliques_delivery_proprio: 0,
 						cliques_ifood: 0,
@@ -1378,7 +1413,9 @@
 						regDia.acessos_instagram += 1;
 					}
 				} else if (tipoEvento === 'clique_link') {
-					if (nomeLink === 'whatsapp_banner') {
+					if (nomeLink === 'cardapio_natal_2026') {
+						regDia.cliques_natal_2026 = (regDia.cliques_natal_2026 || 0) + 1;
+					} else if (nomeLink === 'whatsapp_banner') {
 						if (origemAtual === 'google') {
 							regDia.cliques_wa_google += 1;
 						} else {
@@ -1454,6 +1491,7 @@
 			// Monitora cliques exclusivamente nos links de banner e logo já existentes na sua estrutura
 			function configurarCliquesNosBannersExistentes() {
 				const bannersExistentes = [
+					{ id: 'natal-2026-btn', nome: 'cardapio_natal_2026' },
 					{ id: 'whatsapp-btn', nome: 'whatsapp_banner' },
 					{ id: 'btnDeliveryProprio', nome: 'delivery_proprio' },
 					{ id: 'btnIfood', nome: 'ifood' },
@@ -1482,7 +1520,7 @@
 				const tbody = document.getElementById('analyticsDailyTableBody');
 				if (tbody) {
 					if (datas.length === 0) {
-						tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:18px; color:#cbd5e1;">Nenhum acesso registrado ainda hoje. Os números serão atualizados automaticamente a cada novo clique!</td></tr>';
+						tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:18px; color:#cbd5e1;">Nenhum acesso registrado ainda hoje. Os números serão atualizados automaticamente a cada novo clique!</td></tr>';
 					} else {
 						tbody.innerHTML = datas.map(function(dt) {
 							const d = db.dias[dt];
@@ -1500,6 +1538,7 @@
 								'<td>' + (d.cliques_delivery_proprio || 0) + '</td>' +
 								'<td>' + (d.cliques_ifood || 0) + '</td>' +
 								'<td>' + (d.cliques_99food || 0) + '</td>' +
+								'<td><strong>' + (d.cliques_natal_2026 || 0) + '</strong></td>' +
 								'<td>Shopee: ' + (d.cliques_shopee || 0) + ' | Logo Insta: ' + (d.cliques_instagram || 0) + '</td>' +
 							'</tr>';
 						}).join('');
@@ -1581,13 +1620,14 @@
 				if (exportBtn) {
 					exportBtn.addEventListener('click', function() {
 						const db = carregarBancoLocal();
-						const linhas = ['Data,Acessos_Google,Acessos_Instagram,Cliques_WhatsApp_Google,Cliques_WhatsApp_Instagram,Cliques_Delivery_Direto,Cliques_iFood,Cliques_99Food,Cliques_Shopee,Cliques_Logo_Instagram'];
+						const linhas = ['Data,Acessos_Google,Acessos_Instagram,Cliques_Natal_2026,Cliques_WhatsApp_Google,Cliques_WhatsApp_Instagram,Cliques_Delivery_Direto,Cliques_iFood,Cliques_99Food,Cliques_Shopee,Cliques_Logo_Instagram'];
 						Object.keys(db.dias).sort().reverse().forEach(function(dt) {
 							const d = db.dias[dt];
 							linhas.push([
 								dt,
 								d.acessos_google || 0,
 								d.acessos_instagram || 0,
+								d.cliques_natal_2026 || 0,
 								d.cliques_wa_google || 0,
 								d.cliques_wa_instagram || 0,
 								d.cliques_delivery_proprio || 0,
