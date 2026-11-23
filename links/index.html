@@ -19,16 +19,15 @@
 	<link rel="canonical" href="https://andressameireles.com.br">
 
 	<!-- ==================== IMPLEMENTAÇÃO 1: GOOGLE ANALYTICS 4 (GA4) & GOOGLE ADS (GTAG) ==================== -->
-	<!-- Substitua 'G-XXXXXXXXXX' pelo seu ID do GA4 e/ou 'AW-XXXXXXXXXX' pelo seu ID de Conversão do Google Ads -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-RELBSW5DF5"></script>
 	<script>
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
 		gtag('js', new Date());
 
-		// Configuração padrão do GA4 e Google Ads (mantém compatibilidade com o contador do Google Ads)
+		// Configuração oficial do GA4 (eventos individuais por banner são importados no Google Ads)
 		gtag('config', 'G-RELBSW5DF5', { 'send_page_view': true });
-		// gtag('config', 'AW-XXXXXXXXXX'); // Descomente e coloque seu ID do Google Ads se utilizar tag AW-
+		// gtag('config', 'AW-XXXXXXXXXX'); // Opcional: descomente se quiser usar também tag direta do Google Ads
 	</script>
 
 
@@ -943,10 +942,10 @@
 
 <!-- ==================== BANNERS ATIVOS ==================== -->
 
-		<!-- 0. BANNER CARDÁPIO DE NATAL 2026 (PDF GOOGLE DRIVE) -->
+		<!-- 0. BANNER CARDÁPIO DE NATAL 2026 (SITE INTERATIVO) -->
 		<!-- PARA TROCAR A IMAGEM: substitua o conteúdo de src="..." pelo caminho da sua imagem (ex: src="imagens/banner-natal-2026.jpg") ou pelo código Base64 dela -->
-		<a href="https://andressameireles.com.br/natal2026/" target="_blank" rel="noopener noreferrer" class="banner-card natal-banner-card" id="natal-2026-btn" title="Abrir Cardápio de Natal 2026 em PDF">
-			<img id="natal-2026-img" src="banner-cardapio-natal-2026.jpg" alt="Cardápio de Natal 2026 - Andressa Meireles Confeitaria (Abrir PDF)">
+		<a href="https://andressameireles.com.br/natal2026/" target="_blank" rel="noopener noreferrer" class="banner-card natal-banner-card" id="natal-2026-btn" title="Abrir Cardápio de Natal 2026">
+			<img id="natal-2026-img" src="banner-cardapio-natal-2026.jpg" alt="Cardápio de Natal 2026 - Andressa Meireles Confeitaria">
 		</a>
 
 		<!-- 1. LINK DE ENCOMENDA (WHATSAPP DIRETO COM ID VERIFICADO PELO SCRIPT DO GOOGLE ADS / INSTAGRAM) -->
@@ -1182,24 +1181,34 @@
 
 			<div class="analytics-kpi-grid">
 				<div class="analytics-kpi-card">
-					<div class="analytics-kpi-label">Acessos via Google Ads</div>
+					<div class="analytics-kpi-label">Acessos via Google</div>
 					<div class="analytics-kpi-value" id="kpiGoogleVisits">0</div>
-					<div class="analytics-kpi-sub" id="kpiGoogleClicks">0 cliques em links</div>
+					<div class="analytics-kpi-sub" id="kpiGoogleClicks">WhatsApp: 0 | Natal: 0</div>
 				</div>
 				<div class="analytics-kpi-card">
 					<div class="analytics-kpi-label">Acessos via Instagram</div>
 					<div class="analytics-kpi-value" id="kpiInstaVisits">0</div>
-					<div class="analytics-kpi-sub" id="kpiInstaClicks">0 cliques em links</div>
+					<div class="analytics-kpi-sub" id="kpiInstaClicks">WhatsApp: 0 | Natal: 0</div>
 				</div>
 				<div class="analytics-kpi-card">
-					<div class="analytics-kpi-label">Cliques no WhatsApp</div>
+					<div class="analytics-kpi-label">Banner Natal 2026</div>
+					<div class="analytics-kpi-value" id="kpiNatalTotal">0</div>
+					<div class="analytics-kpi-sub" id="kpiNatalSplit">Google: 0 | Insta: 0</div>
+				</div>
+				<div class="analytics-kpi-card">
+					<div class="analytics-kpi-label">Banner WhatsApp</div>
 					<div class="analytics-kpi-value" id="kpiWaTotal">0</div>
 					<div class="analytics-kpi-sub" id="kpiWaSplit">Google: 0 | Insta: 0</div>
 				</div>
 				<div class="analytics-kpi-card">
-					<div class="analytics-kpi-label">Cliques no Delivery</div>
+					<div class="analytics-kpi-label">Banner Delivery</div>
 					<div class="analytics-kpi-value" id="kpiDeliveryTotal">0</div>
-					<div class="analytics-kpi-sub" id="kpiDeliverySplit">Direto / iFood / 99Food</div>
+					<div class="analytics-kpi-sub" id="kpiDeliverySplit">Direto: 0 | iFood: 0 | 99: 0</div>
+				</div>
+				<div class="analytics-kpi-card">
+					<div class="analytics-kpi-label">Shopee &amp; Logo Insta</div>
+					<div class="analytics-kpi-value" id="kpiOutrosTotal">0</div>
+					<div class="analytics-kpi-sub" id="kpiOutrosSplit">Shopee: 0 | Logo: 0</div>
 				</div>
 			</div>
 
@@ -1336,9 +1345,17 @@
 		}
 
 		/*
-		 * 2. IMPLEMENTAÇÃO DUPLA DE CONTADOR DE ACESSOS E CLIQUES NOS LINKS DE BANNER EXISTENTES
-		 *    - Implementação A: Eventos automáticos para Google Analytics 4 (GA4) e Conversão do Google Ads (gtag)
-		 *    - Implementação B: Banco de Dados Diário (Local + Webhook para Planilha Google)
+		 * 2. IMPLEMENTAÇÃO DUPLA DE CONTADOR DE ACESSOS E CLIQUES EM CADA BANNER DO SITE
+		 *    - Implementação A: Eventos individuais no GA4 (compatíveis com importação no Google Ads)
+		 *      * clique_banner_natal    -> Banner Cardápio de Natal 2026 (importar como Secundária)
+		 *      * clique_whatsapp        -> Banner Encomende pelo WhatsApp (Principal - Contato)
+		 *      * clique_banner_delivery -> Abertura do modal de Delivery
+		 *      * clique_delivery_direto -> Botão Delivery Direto / InstaDelivery (Principal - Contato)
+		 *      * clique_ifood           -> Botão iFood
+		 *      * clique_99food          -> Botão 99Food
+		 *      * clique_shopee          -> Banner Achadinhos Shopee (NÃO importar no Google Ads)
+		 *      * clique_logo_instagram  -> Logo do topo (Instagram)
+		 *    - Implementação B: Banco de Dados Diário (Local + CSV + Webhook opcional)
 		 */
 		(function() {
 			// Caso crie o Web App no Google Apps Script (Planilha Google), cole a URL abaixo para gravar na nuvem:
@@ -1373,9 +1390,12 @@
 					db.dias[dataStr] = {
 						acessos_google: 0,
 						acessos_instagram: 0,
-						cliques_wa_google: 0,
 						cliques_natal_2026: 0,
+						cliques_natal_google: 0,
+						cliques_natal_instagram: 0,
+						cliques_wa_google: 0,
 						cliques_wa_instagram: 0,
+						cliques_abrir_delivery: 0,
 						cliques_delivery_proprio: 0,
 						cliques_ifood: 0,
 						cliques_99food: 0,
@@ -1386,8 +1406,8 @@
 				return db.dias[dataStr];
 			}
 
-			// Registra o evento no Banco Diário, no GA4/Google Ads e na Planilha Google sem atrasar o clique
-			function dispararRastreamentoDuplo(tipoEvento, nomeLink, urlDestino) {
+			// Registra o evento no Banco Diário, no GA4 (evento individual por banner) e no Webhook sem atrasar o clique
+			function dispararRastreamentoDuplo(tipoEvento, nomeLink, urlDestino, eventoGA4) {
 				const dataHoje = obterDataHoje();
 				const params = new URLSearchParams(window.location.search);
 				const utmParam = params.get('utm_source');
@@ -1395,6 +1415,7 @@
 					data: dataHoje,
 					horario: new Date().toLocaleTimeString('pt-BR'),
 					tipo_evento: tipoEvento, // 'acesso_pagina' ou 'clique_link'
+					evento_ga4: eventoGA4 || tipoEvento,
 					origem: origemAtual,     // 'google' ou 'instagram'
 					canal_detalhe: infoOrigemAtual.canal,
 					utm_source: utmParam || origemAtual,
@@ -1408,51 +1429,60 @@
 
 				if (tipoEvento === 'acesso_pagina') {
 					if (origemAtual === 'google') {
-						regDia.acessos_google += 1;
+						regDia.acessos_google = (regDia.acessos_google || 0) + 1;
 					} else {
-						regDia.acessos_instagram += 1;
+						regDia.acessos_instagram = (regDia.acessos_instagram || 0) + 1;
 					}
 				} else if (tipoEvento === 'clique_link') {
 					if (nomeLink === 'cardapio_natal_2026') {
 						regDia.cliques_natal_2026 = (regDia.cliques_natal_2026 || 0) + 1;
+						if (origemAtual === 'google') {
+							regDia.cliques_natal_google = (regDia.cliques_natal_google || 0) + 1;
+						} else {
+							regDia.cliques_natal_instagram = (regDia.cliques_natal_instagram || 0) + 1;
+						}
 					} else if (nomeLink === 'whatsapp_banner') {
 						if (origemAtual === 'google') {
-							regDia.cliques_wa_google += 1;
+							regDia.cliques_wa_google = (regDia.cliques_wa_google || 0) + 1;
 						} else {
-							regDia.cliques_wa_instagram += 1;
+							regDia.cliques_wa_instagram = (regDia.cliques_wa_instagram || 0) + 1;
 						}
+					} else if (nomeLink === 'abriu_janela_delivery') {
+						regDia.cliques_abrir_delivery = (regDia.cliques_abrir_delivery || 0) + 1;
 					} else if (nomeLink === 'delivery_proprio') {
-						regDia.cliques_delivery_proprio += 1;
+						regDia.cliques_delivery_proprio = (regDia.cliques_delivery_proprio || 0) + 1;
 					} else if (nomeLink === 'ifood') {
-						regDia.cliques_ifood += 1;
+						regDia.cliques_ifood = (regDia.cliques_ifood || 0) + 1;
 					} else if (nomeLink === '99food') {
-						regDia.cliques_99food += 1;
+						regDia.cliques_99food = (regDia.cliques_99food || 0) + 1;
 					} else if (nomeLink === 'shopee') {
-						regDia.cliques_shopee += 1;
+						regDia.cliques_shopee = (regDia.cliques_shopee || 0) + 1;
 					} else if (nomeLink === 'instagram_logo') {
-						regDia.cliques_instagram += 1;
+						regDia.cliques_instagram = (regDia.cliques_instagram || 0) + 1;
 					}
 				}
 				salvarBancoLocal(db);
 
-				// 2) Envia evento para o Google Analytics 4 (GA4) e Google Ads (gtag)
+				// 2) Envia eventos limpos para o Google Analytics 4 (GA4)
 				if (typeof window.gtag === 'function') {
 					try {
-						window.gtag('event', tipoEvento, {
+						const paramsGA4 = {
 							'event_category': 'engajamento_banners',
 							'event_label': nomeLink,
+							'banner_nome': nomeLink,
 							'origem_trafego': origemAtual,
 							'canal_trafego': infoOrigemAtual.canal,
 							'utm_source': payload.utm_source,
 							'link_url': payload.url_destino,
 							'transport_type': 'beacon'
-						});
-						if (tipoEvento === 'clique_link' && origemAtual === 'google') {
-							window.gtag('event', 'conversion', {
-								'event_category': 'google_lead',
-								'event_label': nomeLink,
-								'transport_type': 'beacon'
-							});
+						};
+
+						// Evento consolidado geral (acesso_pagina / clique_link)
+						window.gtag('event', tipoEvento, paramsGA4);
+
+						// Evento dedicado por banner (ex: clique_banner_natal, clique_whatsapp, clique_delivery_direto, etc.)
+						if (tipoEvento === 'clique_link' && eventoGA4) {
+							window.gtag('event', eventoGA4, paramsGA4);
 						}
 					} catch (err) {}
 				}
@@ -1482,30 +1512,36 @@
 				const sessionKey = 'andressa_visited_' + origemAtual + '_' + obterDataHoje();
 				if (!sessionStorage.getItem(sessionKey)) {
 					sessionStorage.setItem(sessionKey, '1');
-					dispararRastreamentoDuplo('acesso_pagina', 'abertura_site', window.location.href);
+					dispararRastreamentoDuplo('acesso_pagina', 'abertura_site', window.location.href, null);
 				}
 			} catch (e) {
-				dispararRastreamentoDuplo('acesso_pagina', 'abertura_site', window.location.href);
+				dispararRastreamentoDuplo('acesso_pagina', 'abertura_site', window.location.href, null);
 			}
 
-			// Monitora cliques exclusivamente nos links de banner e logo já existentes na sua estrutura
+			// Monitora cliques em CADA banner e botão do site com evento próprio no GA4
 			function configurarCliquesNosBannersExistentes() {
 				const bannersExistentes = [
-					{ id: 'natal-2026-btn', nome: 'cardapio_natal_2026' },
-					{ id: 'whatsapp-btn', nome: 'whatsapp_banner' },
-					{ id: 'btnDeliveryProprio', nome: 'delivery_proprio' },
-					{ id: 'btnIfood', nome: 'ifood' },
-					{ id: 'btn99food', nome: '99food' },
-					{ id: 'shopee-btn', nome: 'shopee' },
-					{ id: 'logo-instagram-btn', nome: 'instagram_logo' },
-					{ id: 'deliveryTrigger', nome: 'abriu_janela_delivery' }
+					{ id: 'natal-2026-btn', nome: 'cardapio_natal_2026', eventoGA4: 'clique_banner_natal' },
+					{ id: 'whatsapp-btn', nome: 'whatsapp_banner', eventoGA4: 'clique_whatsapp' },
+					{ id: 'deliveryTrigger', nome: 'abriu_janela_delivery', eventoGA4: 'clique_banner_delivery', somenteAoAbrir: true },
+					{ id: 'btnDeliveryProprio', nome: 'delivery_proprio', eventoGA4: 'clique_delivery_direto' },
+					{ id: 'btnIfood', nome: 'ifood', eventoGA4: 'clique_ifood' },
+					{ id: 'btn99food', nome: '99food', eventoGA4: 'clique_99food' },
+					{ id: 'shopee-btn', nome: 'shopee', eventoGA4: 'clique_shopee' },
+					{ id: 'logo-instagram-btn', nome: 'instagram_logo', eventoGA4: 'clique_logo_instagram' }
 				];
+
+				const deliveryWrapper = document.getElementById('deliveryWrapper');
 
 				bannersExistentes.forEach(function(item) {
 					const el = document.getElementById(item.id);
 					if (el) {
 						el.addEventListener('click', function() {
-							dispararRastreamentoDuplo('clique_link', item.nome, el.href || 'interacao_banner');
+							// Para o disparador de delivery, conta somente quando o usuário ABRE a janela (não ao fechar)
+							if (item.somenteAoAbrir && deliveryWrapper && !deliveryWrapper.classList.contains('is-open')) {
+								return;
+							}
+							dispararRastreamentoDuplo('clique_link', item.nome, el.href || 'interacao_banner', item.eventoGA4);
 						});
 					}
 				});
@@ -1515,7 +1551,9 @@
 			function atualizarPainelAdmin() {
 				const db = carregarBancoLocal();
 				const datas = Object.keys(db.dias).sort().reverse();
-				let totG = 0, totI = 0, totWaG = 0, totWaI = 0, totDel = 0;
+				let totG = 0, totI = 0, totWaG = 0, totWaI = 0;
+				let totNatal = 0, totNatalG = 0, totNatalI = 0;
+				let totDelDireto = 0, totIfood = 0, tot99 = 0, totShopee = 0, totLogoInsta = 0;
 
 				const tbody = document.getElementById('analyticsDailyTableBody');
 				if (tbody) {
@@ -1524,22 +1562,34 @@
 					} else {
 						tbody.innerHTML = datas.map(function(dt) {
 							const d = db.dias[dt];
+							const nTot = d.cliques_natal_2026 || 0;
+							const nG = d.cliques_natal_google || 0;
+							const nI = d.cliques_natal_instagram || 0;
 							totG += (d.acessos_google || 0);
 							totI += (d.acessos_instagram || 0);
 							totWaG += (d.cliques_wa_google || 0);
 							totWaI += (d.cliques_wa_instagram || 0);
-							totDel += ((d.cliques_delivery_proprio || 0) + (d.cliques_ifood || 0) + (d.cliques_99food || 0));
+							totNatal += nTot;
+							totNatalG += nG;
+							totNatalI += nI;
+							totDelDireto += (d.cliques_delivery_proprio || 0);
+							totIfood += (d.cliques_ifood || 0);
+							tot99 += (d.cliques_99food || 0);
+							totShopee += (d.cliques_shopee || 0);
+							totLogoInsta += (d.cliques_instagram || 0);
+
+							const natalDetalhe = (nG || nI) ? ' (G: ' + nG + ' / I: ' + nI + ')' : '';
 
 							return '<tr>' +
 								'<td><strong>' + dt + '</strong></td>' +
 								'<td>' + (d.acessos_google || 0) + '</td>' +
 								'<td>' + (d.acessos_instagram || 0) + '</td>' +
-								'<td><strong>' + ((d.cliques_wa_google || 0) + (d.cliques_wa_instagram || 0)) + '</strong> (Google: ' + (d.cliques_wa_google || 0) + ' / Insta: ' + (d.cliques_wa_instagram || 0) + ')</td>' +
+								'<td><strong>' + ((d.cliques_wa_google || 0) + (d.cliques_wa_instagram || 0)) + '</strong> (G: ' + (d.cliques_wa_google || 0) + ' / I: ' + (d.cliques_wa_instagram || 0) + ')</td>' +
 								'<td>' + (d.cliques_delivery_proprio || 0) + '</td>' +
 								'<td>' + (d.cliques_ifood || 0) + '</td>' +
 								'<td>' + (d.cliques_99food || 0) + '</td>' +
-								'<td><strong>' + (d.cliques_natal_2026 || 0) + '</strong></td>' +
-								'<td>Shopee: ' + (d.cliques_shopee || 0) + ' | Logo Insta: ' + (d.cliques_instagram || 0) + '</td>' +
+								'<td><strong>' + nTot + '</strong>' + natalDetalhe + '</td>' +
+								'<td>Shopee: ' + (d.cliques_shopee || 0) + ' | Logo: ' + (d.cliques_instagram || 0) + '</td>' +
 							'</tr>';
 						}).join('');
 					}
@@ -1561,28 +1611,33 @@
 					if (el) el.textContent = val;
 				};
 				setTxt('kpiGoogleVisits', totG);
-				setTxt('kpiGoogleClicks', 'WhatsApp via Google: ' + totWaG);
+				setTxt('kpiGoogleClicks', 'WhatsApp: ' + totWaG + ' | Natal: ' + totNatalG);
 				setTxt('kpiInstaVisits', totI);
-				setTxt('kpiInstaClicks', 'WhatsApp via Insta: ' + totWaI);
+				setTxt('kpiInstaClicks', 'WhatsApp: ' + totWaI + ' | Natal: ' + totNatalI);
+				setTxt('kpiNatalTotal', totNatal);
+				setTxt('kpiNatalSplit', 'Google: ' + totNatalG + ' | Insta: ' + totNatalI);
 				setTxt('kpiWaTotal', totWaG + totWaI);
 				setTxt('kpiWaSplit', 'Google: ' + totWaG + ' | Insta: ' + totWaI);
-				setTxt('kpiDeliveryTotal', totDel);
+				setTxt('kpiDeliveryTotal', totDelDireto + totIfood + tot99);
+				setTxt('kpiDeliverySplit', 'Direto: ' + totDelDireto + ' | iFood: ' + totIfood + ' | 99: ' + tot99);
+				setTxt('kpiOutrosTotal', totShopee + totLogoInsta);
+				setTxt('kpiOutrosSplit', 'Shopee: ' + totShopee + ' | Logo: ' + totLogoInsta);
 			}
 
 			function configurarPainelAdmin() {
 				const modal = document.getElementById('analyticsModalBackdrop');
 				const closeBtn = document.getElementById('closeAnalyticsModal');
-				const footerTxt = document.querySelector('.footer-text');
+				const footerTxt = document.querySelector('.site-footer');
 
 				function abrirModal() {
 					if (modal) {
 						atualizarPainelAdmin();
-						modal.classList.add('is-open');
+						modal.classList.add('is-visible');
 					}
 				}
 
 				function fecharModal() {
-					if (modal) modal.classList.remove('is-open');
+					if (modal) modal.classList.remove('is-visible');
 				}
 
 				if (closeBtn) closeBtn.addEventListener('click', fecharModal);
@@ -1620,7 +1675,7 @@
 				if (exportBtn) {
 					exportBtn.addEventListener('click', function() {
 						const db = carregarBancoLocal();
-						const linhas = ['Data,Acessos_Google,Acessos_Instagram,Cliques_Natal_2026,Cliques_WhatsApp_Google,Cliques_WhatsApp_Instagram,Cliques_Delivery_Direto,Cliques_iFood,Cliques_99Food,Cliques_Shopee,Cliques_Logo_Instagram'];
+						const linhas = ['Data,Acessos_Google,Acessos_Instagram,Cliques_Natal_2026_Total,Cliques_Natal_Google,Cliques_Natal_Instagram,Cliques_WhatsApp_Google,Cliques_WhatsApp_Instagram,Cliques_Abriu_Delivery,Cliques_Delivery_Direto,Cliques_iFood,Cliques_99Food,Cliques_Shopee,Cliques_Logo_Instagram'];
 						Object.keys(db.dias).sort().reverse().forEach(function(dt) {
 							const d = db.dias[dt];
 							linhas.push([
@@ -1628,8 +1683,11 @@
 								d.acessos_google || 0,
 								d.acessos_instagram || 0,
 								d.cliques_natal_2026 || 0,
+								d.cliques_natal_google || 0,
+								d.cliques_natal_instagram || 0,
 								d.cliques_wa_google || 0,
 								d.cliques_wa_instagram || 0,
+								d.cliques_abrir_delivery || 0,
 								d.cliques_delivery_proprio || 0,
 								d.cliques_ifood || 0,
 								d.cliques_99food || 0,
